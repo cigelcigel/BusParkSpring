@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:fragment="header">
+    <title th:text='#{title}'></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:include="header"></div>
+<div><p class="h3" th:text="#{title} + '. ' + #{route.title}"></p></div>
+<div>
+    <p th:if="${addedRoute != null and addedRoute}" class="h4" th:text="#{route.route} + ' ' + #{route.success}">
+    <p th:if="${addedRoute != null and not addedRoute}" class="h4" th:text="#{route.error}">
+    <p th:if="${wronginput != null}" class="h4" th:text="#{route.wronginput} + '!'">
+    <p th:if="${busCodeNotFound != null}" class="h4"
+       th:text="#{route.code} + ' ' + ${busCodeNotFound} + ' ' + #{route.codenotfound}+ '!'">
+    <p th:if="${busNameNotFound != null}" class="h4"
+       th:text="#{route.busname} + ' ' + ${busNameNotFound} + ' ' + #{route.namenotfound}+ '!'">
+    <FORM method="POST" th:object="${assignment}" th:action="@{/route}">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" th:text="#{route.code}"></label>
+            <div class="col-sm-10">
+                <input id="id_code" name="code" type="number" size="4" min="0" step="1"
+                       th:field="${assignment.bus.code}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" th:text="#{route.tax}"></label>
+            <div class="col-sm-10">
+                <input name="tax" type="number" value="0" min="0" step="0.1" th:field="${assignment.tax}" required>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" th:text="#{route.journey}"></label>
+            <div class="col-sm-10">
+                <input name="journey" type="number" value="20" th:field="${assignment.journey}">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" name="btnAddAssignment" th:text="#{route.addbus}"></button>
+    </FORM>
+    <FORM method="POST" th:action="@{/route}">
+        <button type="submit" class="btn btn-primary" name="btnCreateRoute" th:text="#{route.create.route}"></button>
+        <button type="submit" class="btn btn-primary" name="btnCancelRoute" th:text="#{route.cancel.route}"></button>
+    </FORM>
+    <div th:if="${session.addAssignment != null and session.addAssignment.size() > 0}">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+            <tr>
+                <th th:text="#{route.num}"></th>
+                <th th:text="#{route.busname}"></th>
+                <th th:text="#{route.code}"></th>
+                <th th:text="#{route.tax}"></th>
+                <th th:text="#{route.journey}"></th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tr th:each="assignments, rowStat : ${session.addAssignment}">
+                <td th:text="${rowStat.count}"></td>
+                <td th:text="${assignments.bus.model}"></td>
+                <td th:text="${assignments.bus.code}"></td>
+                <td th:text="${assignments.tax}"></td>
+                <td th:text="${assignments.journey}"></td>
+                <td style="text-align: center"><a th:href="@{'/route/del/{count}'(count=${rowStat.count})}">delete</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src="/js/script.js"></script>
+</body>
+</html>

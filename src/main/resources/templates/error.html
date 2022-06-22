@@ -1,0 +1,13 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:fragment="header">
+    <title th:text='#{title}'></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:include="header"></div>
+<h1>Sorry, but this is wrong action! </h1>
+<a href="/">Back</a>
+<p th:text="'Error_status: ' + ${error_status}">
+</body>
+</html>

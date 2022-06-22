@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:fragment="header">
+    <title th:text='#{title}'></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:include="header"></div>
+<div><p class="h3" th:text="#{title} + '. ' + #{bus.title}"></p></div>
+<div>
+    <div th:switch="${identify}">
+        <p class="h4" th:case="'true'" th:text="#{menu.bus} + ' ' + ${addedBus} + ' ' + #{route.success}"></p>
+        <p class="h4" th:case="'false'" th:text="#{identification.robot}"></p>
+        <p class="h4" th:case="*"></p>
+    </div>
+
+    <div th:if="${editCode == null}">
+        <FORM method="POST" th:object="${bus}" th:action="@{/bus}">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.driver}"></label>
+                <div class="col-sm-10">
+                    <input id="id_driver" name="driver" type="number" size="4" min="0" step="1"
+                           th:field="${bus.driver.id}">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.busname}"></label>
+                <div class="col-sm-10">
+                    <input name="model" type="text" size="45" th:field="${bus.model}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.code}"></label>
+                <div class="col-sm-10">
+                    <input name="code" type="number" size="45" th:field="${bus.code}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.tax}"></label>
+                <div class="col-sm-10">
+                    <input name="mileage" type="number" value="0" min="0" step="0.1" th:field="${bus.mileage}" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.consumption}"></label>
+                <div class="col-sm-10">
+                    <input name="consumption" type="number" value="0" min="0" step="0.01" th:field="${bus.consumption}"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{bus.measure}" th:field="${bus.status}"></label>
+                <div class="col-sm-10">
+                    <select class="selectpicker" name="status" size="1">
+                        <option value="free" th:text="#{bus.kilo}"/>
+                        <option value="work" th:text="#{bus.pc}"/>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{bus.comments}"></label>
+                <div class="col-sm-10">
+                    <input name="comments" type="text" size="45" th:field="${bus.comments}">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" name="btnSaveBus" th:text="#{bus.add}"></button>
+        </FORM>
+    </div>
+    <div th:if="${editCode != null}">
+        <FORM method="POST" th:action="@{/bus/edit/{code}(code = ${editCode})}">
+            <h4 th:text="#{bus.change}">:</h4>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.code} + ': ' + ${editCode}"></label>
+                <div class="col-sm-10">
+                    <!--  <input model="code" type="text" size="45" required> -->
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.driver}"></label>
+                <div class="col-sm-10">
+                    <input name="changeDriver" type="number" size="4" min="0" step="1">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.tax}"></label>
+                <div class="col-sm-10">
+                    <input name="changeMileage" type="number" min="0" step="0.1">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label" th:text="#{route.consumption}"></label>
+                <div class="col-sm-10">
+                    <input name="changeConsumption" type="number" min="0" step="0.01">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary" name="btnChangeBus" th:text="#{bus.change}"></button>
+        </FORM>
+    </div>
+
+    <table class="table table-sm">
+        <thead class="thead-dark">
+        <tr>
+            <th th:text="#{route.driver}"></th>
+            <th th:text="#{route.busname}"></th>
+            <th th:text="#{route.code}"></th>
+            <th th:text="#{route.tax}"></th>
+            <th th:text="#{route.consumption}"></th>
+            <th th:text="#{bus.measure}"></th>
+            <th th:text="#{bus.comments}"></th>
+            <th>Edit</th>
+        </tr>
+        </thead>
+        <tr th:each="element : ${buses}">
+            <span th:if="${element.driver == null}"><td>- </td></span>
+            <span th:if="${element.driver != null}"><td th:text="${element.driver.id}"></td></span>
+            <td th:text="${element.model}"></td>
+            <td th:text="${element.code}"></td>
+            <td th:text="${element.mileage}"></td>
+            <td th:text="${element.consumption}"></td>
+            <td th:text="${element.status}"></td>
+            <td th:text="${element.comments}"></td>
+            <td style="text-align: center"><a th:href="@{'/bus/edit/{code}'(code=${element.code})}">edit</a></td>
+
+        </tr>
+    </table>
+    <div class="pagination">
+        <div th:if="${currentPage != 1}">
+            <a class="page-link" th:href="@{/bus(size=${buses.size}, page=${currentPage - 1})}">«</a>
+        </div>
+
+        <ul class="pagination justify-content-center" th:if="${buses.totalPages > 0}"
+            th:each="pageNumber : ${pageNumbers}">
+            <li class="page-item" th:classappend="${pageNumber==buses.number + 1} ? 'active'">
+                <a class="page-link" th:href="@{/bus(size=${buses.size}, page=${pageNumber})}"
+                   th:text=${pageNumber}
+                ></a>
+            </li>
+        </ul>
+        <div th:if="${currentPage < buses.totalPages}">
+            <a class="page-link" th:href="@{/bus(size=${buses.size}, page=${currentPage + 1})}">»</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

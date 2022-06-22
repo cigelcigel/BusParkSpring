@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:fragment="header">
+    <title th:text='#{title}'></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:include="header"></div>
+<div><p th:text="#{title} + '. ' + #{cancel.title}"></p></div>
+
+<div>
+
+    <p th:if="${session.route != null and session.route.status == 1}" class="h4"
+       th:text="#{route.route} + ' № ' + ${session.route.id} + ' ' + #{cancel.canceled} + '!'">
+    <p th:if="${session.routeFind == null}" class="h4" th:text="#{cancel.findfail}">
+    <FORM class="px-4 py-3" method="POST" th:action="@{/cancel}">
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" th:text="#{route.number} + ':'"></label>
+            <div class="col-sm-10">
+                <input name="routeId" type="number" min="1" th:placeholder="#{cancel.search}" autofocus required>
+            </div>
+        </div>
+        <button type="submit" name="btnSearchRoute" class="btn btn-primary" th:text="#{cancel.find}"></button>
+    </FORM>
+    <div th:if="${session.route != null and session.route.status == 0 and session.assignments != null}">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+            <tr>
+                <th th:text="#{route.num}"></th>
+                <th th:text="#{route.busname}"></th>
+                <th th:text="#{route.code}"></th>
+                <th th:text="#{route.tax}"></th>
+                <th th:text="#{route.journey}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tr th:each="element, rowStat : ${session.assignments}">
+                <td th:text="${rowStat.count}"></td>
+                <td th:text="${element.bus.model}"></td>
+                <td th:text="${element.bus.code}"></td>
+                <td th:text="${element.tax}"></td>
+                <td th:text="${element.journey}"></td>
+                <td><a th:if="${element.canceled == 0}" th:href="@{'/cancel/edit/{count}'(count=${rowStat.count})}">cancel</a>
+                    <a th:if="${element.canceled == 1}" th:text="#{cancel.item}"></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

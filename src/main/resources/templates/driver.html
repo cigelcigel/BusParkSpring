@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${lang}">
+<head th:fragment="header">
+    <title th:text='#{title}'></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div th:include="header"></div>
+<div><p th:text="#{title} + '. ' + #{driver.title}"></p></div>
+
+<div>
+
+    <p th:if="${session.route != null and session.route.status == 1}" class="h4"
+       th:text="#{route.route} + ' № ' + ${session.route.id} + ' ' + #{cancel.canceled} + '!'">
+    <FORM class="px-4 py-3" method="POST" th:action="@{/driver}">
+        <button type="submit" name="btnSearchRoute" class="btn btn-primary" th:text="#{driver.find}"></button>
+    </FORM>
+    <div th:if="${session.assignments != null}">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+            <tr>
+                <th th:text="#{route.num}"></th>
+                <th th:text="#{route.busname}"></th>
+                <th th:text="#{bus.measure}"></th>
+                <th th:text="#{route.tax}"></th>
+                <th th:text="#{route.journey}"></th>
+                <th></th>
+            </tr>
+            </thead>
+            <tr th:each="element, rowStat : ${session.assignments}">
+                <td th:text="${rowStat.count}"></td>
+                <td th:text="${element.bus.model}"></td>
+                <td th:text="${element.bus.status}"></td>
+                <td th:text="${element.tax}"></td>
+                <td th:text="${element.journey}"></td>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <FORM class="px-4 py-3" method="POST" th:action="@{/driver}">
+        <button type="submit" name="btnAppointRoute" class="btn btn-primary" th:text="#{driver.appoint}"></button>
+    </FORM>
+</div>
+</body>
+</html>
